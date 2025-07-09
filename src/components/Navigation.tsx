@@ -9,10 +9,8 @@ const Navigation = () => {
   const location = useLocation();
 
   const navigation = [
-    { name: 'Portfolio', href: '/', icon: BarChart3 },
-    { name: 'Assets', href: '/assets', icon: Coins },
-    { name: 'Analytics', href: '/analytics', icon: TrendingUp },
-    { name: 'Networks', href: '/networks', icon: Network },
+    { name: 'Home', href: '/', icon: BarChart3 },
+    { name: 'Portfolio', href: '/portfolio', icon: Wallet },
     { name: 'Settings', href: '/settings', icon: Settings },
   ];
 
