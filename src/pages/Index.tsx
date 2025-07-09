@@ -96,22 +96,30 @@ const Index = () => {
       <Navigation />
       
       {!isConnected ? (
-        <div className="relative">
-          <HeroSection />
+        <div>
+          <HeroSection 
+            onConnectWallet={handleConnectWallet}
+            onShowDemo={handleShowDemo}
+          />
           
-          {/* Call to Action Overlay */}
-          <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-background via-background/80 to-transparent p-8">
-            <div className="max-w-4xl mx-auto text-center">
-              <h3 className="text-2xl font-bold mb-4">Ready to Start Managing Your Crypto?</h3>
-              <p className="text-muted-foreground mb-8 max-w-2xl mx-auto">
-                Connect your wallet to access real-time portfolio tracking, advanced analytics, and AI-powered insights.
-              </p>
-              <div className="flex flex-col sm:flex-row gap-4 justify-center">
+          {/* Call to Action Section */}
+          <section className="bg-gradient-to-br from-background via-background/95 to-primary/5 py-16 px-4">
+            <div className="max-w-4xl mx-auto text-center space-y-8">
+              <div className="space-y-4">
+                <h3 className="text-3xl md:text-4xl font-bold bg-gradient-primary bg-clip-text text-transparent">
+                  Ready to Start Managing Your Crypto?
+                </h3>
+                <p className="text-lg text-muted-foreground max-w-2xl mx-auto leading-relaxed">
+                  Connect your wallet to access real-time portfolio tracking, advanced analytics, and AI-powered insights.
+                </p>
+              </div>
+              
+              <div className="flex flex-col sm:flex-row gap-6 justify-center items-center max-w-md mx-auto">
                 <Button 
                   variant="connect" 
                   size="xl" 
                   onClick={handleConnectWallet}
-                  className="font-semibold group"
+                  className="font-semibold group w-full sm:w-auto"
                 >
                   <Wallet className="w-5 h-5 mr-2" />
                   Connect Wallet
@@ -121,14 +129,14 @@ const Index = () => {
                   variant="glass" 
                   size="xl" 
                   onClick={handleShowDemo}
-                  className="font-semibold"
+                  className="font-semibold w-full sm:w-auto"
                 >
                   <Shield className="w-5 h-5 mr-2" />
                   Try Demo
                 </Button>
               </div>
             </div>
-          </div>
+          </section>
         </div>
       ) : (
         <Dashboard />
