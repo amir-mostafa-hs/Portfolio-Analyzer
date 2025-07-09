@@ -1,12 +1,138 @@
-// Update this page (the content is just a fallback if you fail to update the page)
+import { useState } from 'react';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent } from '@/components/ui/card';
+import { Skeleton } from '@/components/ui/skeleton';
+import { Wallet, ArrowRight, Shield } from 'lucide-react';
+import Navigation from '@/components/Navigation';
+import HeroSection from '@/components/HeroSection';
+import Dashboard from '@/components/Dashboard';
+import { useToast } from '@/hooks/use-toast';
 
 const Index = () => {
-  return (
-    <div className="min-h-screen flex items-center justify-center bg-background">
-      <div className="text-center">
-        <h1 className="text-4xl font-bold mb-4">Welcome to Your Blank App</h1>
-        <p className="text-xl text-muted-foreground">Start building your amazing project here!</p>
+  const [isConnected, setIsConnected] = useState(false);
+  const [isConnecting, setIsConnecting] = useState(false);
+  const [showDemo, setShowDemo] = useState(false);
+  const { toast } = useToast();
+
+  const handleConnectWallet = async () => {
+    setIsConnecting(true);
+    
+    // Simulate wallet connection process
+    setTimeout(() => {
+      setIsConnected(true);
+      setIsConnecting(false);
+      toast({
+        title: "Wallet Connected Successfully!",
+        description: "Welcome to your crypto portfolio dashboard.",
+      });
+    }, 2000);
+  };
+
+  const handleShowDemo = () => {
+    setShowDemo(true);
+    setTimeout(() => {
+      setIsConnected(true);
+      toast({
+        title: "Demo Mode Activated",
+        description: "You're now viewing a demo of the crypto portfolio analyzer.",
+      });
+    }, 1000);
+  };
+
+  if (isConnecting) {
+    return (
+      <div className="min-h-screen bg-background">
+        <Navigation />
+        <div className="min-h-screen bg-gradient-hero flex items-center justify-center p-4">
+          <Card className="bg-card/50 backdrop-blur-glass border-primary/10 max-w-md w-full">
+            <CardContent className="p-8 text-center">
+              <div className="w-16 h-16 bg-gradient-primary rounded-full flex items-center justify-center mx-auto mb-6 animate-crypto-pulse">
+                <Wallet className="w-8 h-8 text-white" />
+              </div>
+              <h2 className="text-2xl font-bold mb-4">Connecting Wallet</h2>
+              <p className="text-muted-foreground mb-6">
+                Please approve the connection in your wallet...
+              </p>
+              <div className="space-y-3">
+                <Skeleton className="h-4 w-full" />
+                <Skeleton className="h-4 w-3/4 mx-auto" />
+                <Skeleton className="h-4 w-1/2 mx-auto" />
+              </div>
+            </CardContent>
+          </Card>
+        </div>
       </div>
+    );
+  }
+
+  if (showDemo && !isConnected) {
+    return (
+      <div className="min-h-screen bg-background">
+        <Navigation />
+        <div className="min-h-screen bg-gradient-hero flex items-center justify-center p-4">
+          <Card className="bg-card/50 backdrop-blur-glass border-primary/10 max-w-md w-full">
+            <CardContent className="p-8 text-center">
+              <div className="w-16 h-16 bg-gradient-secondary rounded-full flex items-center justify-center mx-auto mb-6 animate-glow">
+                <Shield className="w-8 h-8 text-white" />
+              </div>
+              <h2 className="text-2xl font-bold mb-4">Initializing Demo</h2>
+              <p className="text-muted-foreground mb-6">
+                Setting up your demo portfolio...
+              </p>
+              <div className="space-y-3">
+                <Skeleton className="h-4 w-full" />
+                <Skeleton className="h-4 w-2/3 mx-auto" />
+                <Skeleton className="h-4 w-1/3 mx-auto" />
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="min-h-screen bg-background">
+      <Navigation />
+      
+      {!isConnected ? (
+        <div className="relative">
+          <HeroSection />
+          
+          {/* Call to Action Overlay */}
+          <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-background via-background/80 to-transparent p-8">
+            <div className="max-w-4xl mx-auto text-center">
+              <h3 className="text-2xl font-bold mb-4">Ready to Start Managing Your Crypto?</h3>
+              <p className="text-muted-foreground mb-8 max-w-2xl mx-auto">
+                Connect your wallet to access real-time portfolio tracking, advanced analytics, and AI-powered insights.
+              </p>
+              <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                <Button 
+                  variant="connect" 
+                  size="xl" 
+                  onClick={handleConnectWallet}
+                  className="font-semibold group"
+                >
+                  <Wallet className="w-5 h-5 mr-2" />
+                  Connect Wallet
+                  <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
+                </Button>
+                <Button 
+                  variant="glass" 
+                  size="xl" 
+                  onClick={handleShowDemo}
+                  className="font-semibold"
+                >
+                  <Shield className="w-5 h-5 mr-2" />
+                  Try Demo
+                </Button>
+              </div>
+            </div>
+          </div>
+        </div>
+      ) : (
+        <Dashboard />
+      )}
     </div>
   );
 };
