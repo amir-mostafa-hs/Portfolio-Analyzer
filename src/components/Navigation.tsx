@@ -1,17 +1,47 @@
-import { useState } from 'react';
-import { Link, useLocation } from 'react-router-dom';
-import { Button } from '@/components/ui/button';
-import { Wallet, BarChart3, Settings, Menu, X, TrendingUp, Coins, Network, Shield } from 'lucide-react';
-import { cn } from '@/lib/utils';
+import { useState } from "react";
+import { Link, useLocation } from "react-router-dom";
+import { Button } from "@/components/ui/button";
+import {
+  Wallet,
+  BarChart3,
+  Settings,
+  Menu,
+  X,
+  TrendingUp,
+  Coins,
+  Network,
+  Shield,
+} from "lucide-react";
+import { cn } from "@/lib/utils";
+import { useAppKit, useAppKitAccount } from "@reown/appkit/react";
+
+const ConnectButton = () => {
+  const { address } = useAppKitAccount();
+  const { open } = useAppKit();
+
+  return (
+    <Button
+      variant="connect"
+      size="sm"
+      className="md:w-auto w-full font-semibold"
+      onClick={() => open()}
+    >
+      <Wallet className="w-4 h-4 mr-2" />
+      {address
+        ? address.slice(0, 6) + "..." + address.slice(-4)
+        : "Connect Wallet"}
+    </Button>
+  );
+};
 
 const Navigation = () => {
   const [isOpen, setIsOpen] = useState(false);
   const location = useLocation();
 
   const navigation = [
-    { name: 'Home', href: '/', icon: BarChart3 },
-    { name: 'Portfolio', href: '/portfolio', icon: Wallet },
-    { name: 'Settings', href: '/settings', icon: Settings },
+    { name: "Home", href: "/", icon: BarChart3 },
+    { name: "Portfolio", href: "/portfolio", icon: Wallet },
+    { name: "Settings", href: "/settings", icon: Settings },
   ];
 
   const isActive = (path: string) => location.pathname === path;
@@ -56,10 +86,7 @@ const Navigation = () => {
 
           {/* Connect Wallet Button */}
           <div className="hidden md:flex items-center space-x-4">
-            <Button variant="connect" size="sm" className="font-semibold">
-              <Wallet className="w-4 h-4 mr-2" />
-              Connect Wallet
-            </Button>
+            <ConnectButton />
           </div>
 
           {/* Mobile menu button */}
@@ -70,7 +97,11 @@ const Navigation = () => {
               onClick={() => setIsOpen(!isOpen)}
               className="p-2"
             >
-              {isOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+              {isOpen ? (
+                <X className="w-5 h-5" />
+              ) : (
+                <Menu className="w-5 h-5" />
+              )}
             </Button>
           </div>
         </div>
@@ -101,10 +132,7 @@ const Navigation = () => {
             })}
           </div>
           <div className="px-4 py-3 border-t border-primary/10">
-            <Button variant="connect" size="sm" className="w-full font-semibold">
-              <Wallet className="w-4 h-4 mr-2" />
-              Connect Wallet
-            </Button>
+            <ConnectButton />
           </div>
         </div>
       )}

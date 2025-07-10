@@ -1,26 +1,39 @@
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Switch } from '@/components/ui/switch';
-import { Label } from '@/components/ui/label';
-import { Input } from '@/components/ui/input';
-import { Separator } from '@/components/ui/separator';
-import { 
-  Settings as SettingsIcon, 
-  User, 
-  Bell, 
-  Palette, 
-  Shield, 
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Switch } from "@/components/ui/switch";
+import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
+import { Separator } from "@/components/ui/separator";
+import {
+  Settings as SettingsIcon,
+  User,
+  Bell,
+  Palette,
+  Shield,
   Smartphone,
   Mail,
-  Globe
-} from 'lucide-react';
-import Navigation from '@/components/Navigation';
+  Globe,
+} from "lucide-react";
+import Navigation from "@/components/Navigation";
+import { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { useAppKitAccount } from "@reown/appkit/react";
 
 const Settings = () => {
+  const { isConnected } = useAppKitAccount();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (!isConnected) {
+      navigate("/");
+    }
+  }, [isConnected]);
+
+  if (!isConnected) return null;
   return (
     <div className="min-h-screen bg-background">
       <Navigation />
-      
+
       <div className="container mx-auto px-4 py-8 max-w-4xl">
         <div className="space-y-8">
           {/* Header */}
@@ -146,7 +159,9 @@ const Settings = () => {
               <div className="space-y-4">
                 <div className="flex items-center justify-between">
                   <div className="space-y-0.5">
-                    <Label className="text-base">Two-Factor Authentication</Label>
+                    <Label className="text-base">
+                      Two-Factor Authentication
+                    </Label>
                     <p className="text-sm text-muted-foreground">
                       Add an extra layer of security to your account
                     </p>
@@ -189,7 +204,9 @@ const Settings = () => {
                     <Globe className="w-5 h-5 text-muted-foreground" />
                     <div>
                       <p className="font-medium">Chrome on Windows</p>
-                      <p className="text-sm text-muted-foreground">Current session</p>
+                      <p className="text-sm text-muted-foreground">
+                        Current session
+                      </p>
                     </div>
                   </div>
                   <span className="text-xs bg-emerald-500/20 text-emerald-400 px-2 py-1 rounded">
@@ -201,7 +218,9 @@ const Settings = () => {
                     <Smartphone className="w-5 h-5 text-muted-foreground" />
                     <div>
                       <p className="font-medium">Mobile App on iPhone</p>
-                      <p className="text-sm text-muted-foreground">Last active 2 hours ago</p>
+                      <p className="text-sm text-muted-foreground">
+                        Last active 2 hours ago
+                      </p>
                     </div>
                   </div>
                   <Button variant="outline" size="sm">

@@ -1,31 +1,44 @@
-import { useState } from 'react';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent } from '@/components/ui/card';
-import { Skeleton } from '@/components/ui/skeleton';
-import { Wallet, ArrowRight, Shield } from 'lucide-react';
-import Navigation from '@/components/Navigation';
-import HeroSection from '@/components/HeroSection';
-import Dashboard from '@/components/Dashboard';
-import { useToast } from '@/hooks/use-toast';
+import { useEffect, useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+import { Skeleton } from "@/components/ui/skeleton";
+import { Wallet, ArrowRight, Shield } from "lucide-react";
+import Navigation from "@/components/Navigation";
+import HeroSection from "@/components/HeroSection";
+import { useToast } from "@/hooks/use-toast";
+import { useNavigate } from "react-router-dom";
+import { useAppKit, useAppKitAccount } from "@reown/appkit/react";
 
 const Index = () => {
   const [isConnected, setIsConnected] = useState(false);
   const [isConnecting, setIsConnecting] = useState(false);
   const [showDemo, setShowDemo] = useState(false);
   const { toast } = useToast();
+  const navigate = useNavigate();
+  const { open } = useAppKit();
+  const { isConnected: appIsConnected } = useAppKitAccount();
+
+  useEffect(() => {
+    const startPortfolio = () => {
+      if (appIsConnected) {
+        setIsConnecting(true);
+        // Simulate wallet connection process
+        setTimeout(() => {
+          setIsConnected(true);
+          setIsConnecting(false);
+          toast({
+            title: "Wallet Connected Successfully!",
+            description: "Welcome to your crypto portfolio dashboard.",
+          });
+          navigate("/portfolio");
+        }, 2000);
+      }
+    };
+    startPortfolio();
+  }, [appIsConnected]);
 
   const handleConnectWallet = async () => {
-    setIsConnecting(true);
-    
-    // Simulate wallet connection process
-    setTimeout(() => {
-      setIsConnected(true);
-      setIsConnecting(false);
-      toast({
-        title: "Wallet Connected Successfully!",
-        description: "Welcome to your crypto portfolio dashboard.",
-      });
-    }, 2000);
+    open();
   };
 
   const handleShowDemo = () => {
@@ -34,8 +47,10 @@ const Index = () => {
       setIsConnected(true);
       toast({
         title: "Demo Mode Activated",
-        description: "You're now viewing a demo of the crypto portfolio analyzer.",
+        description:
+          "You're now viewing a demo of the crypto portfolio analyzer.",
       });
+      navigate("/demo");
     }, 1000);
   };
 
@@ -94,53 +109,50 @@ const Index = () => {
   return (
     <div className="min-h-screen bg-background">
       <Navigation />
-      
-      {!isConnected ? (
-        <div>
-          <HeroSection 
-            onConnectWallet={handleConnectWallet}
-            onShowDemo={handleShowDemo}
-          />
-          
-          {/* Call to Action Section */}
-          <section className="bg-gradient-to-br from-background via-background/95 to-primary/5 py-16 px-4">
-            <div className="max-w-4xl mx-auto text-center space-y-8">
-              <div className="space-y-4">
-                <h3 className="text-3xl md:text-4xl font-bold bg-gradient-primary bg-clip-text text-transparent">
-                  Ready to Start Managing Your Crypto?
-                </h3>
-                <p className="text-lg text-muted-foreground max-w-2xl mx-auto leading-relaxed">
-                  Connect your wallet to access real-time portfolio tracking, advanced analytics, and AI-powered insights.
-                </p>
-              </div>
-              
-              <div className="flex flex-col sm:flex-row gap-6 justify-center items-center max-w-md mx-auto">
-                <Button 
-                  variant="connect" 
-                  size="xl" 
-                  onClick={handleConnectWallet}
-                  className="font-semibold group w-full sm:w-auto"
-                >
-                  <Wallet className="w-5 h-5 mr-2" />
-                  Connect Wallet
-                  <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
-                </Button>
-                <Button 
-                  variant="glass" 
-                  size="xl" 
-                  onClick={handleShowDemo}
-                  className="font-semibold w-full sm:w-auto"
-                >
-                  <Shield className="w-5 h-5 mr-2" />
-                  Try Demo
-                </Button>
-              </div>
+
+      <div>
+        <HeroSection
+          onConnectWallet={handleConnectWallet}
+          onShowDemo={handleShowDemo}
+        />
+
+        {/* Call to Action Section */}
+        <section className="bg-gradient-to-br from-background via-background/95 to-primary/5 py-16 px-4">
+          <div className="max-w-4xl mx-auto text-center space-y-8">
+            <div className="space-y-4">
+              <h3 className="text-3xl md:text-4xl font-bold bg-gradient-primary bg-clip-text text-transparent">
+                Ready to Start Managing Your Crypto?
+              </h3>
+              <p className="text-lg text-muted-foreground max-w-2xl mx-auto leading-relaxed">
+                Connect your wallet to access real-time portfolio tracking,
+                advanced analytics, and AI-powered insights.
+              </p>
             </div>
-          </section>
-        </div>
-      ) : (
-        <Dashboard />
-      )}
+
+            <div className="flex flex-col sm:flex-row gap-6 justify-center items-center max-w-md mx-auto">
+              <Button
+                variant="connect"
+                size="xl"
+                onClick={handleConnectWallet}
+                className="font-semibold group w-full sm:w-auto"
+              >
+                <Wallet className="w-5 h-5 mr-2" />
+                Connect Wallet
+                <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
+              </Button>
+              <Button
+                variant="glass"
+                size="xl"
+                onClick={handleShowDemo}
+                className="font-semibold w-full sm:w-auto"
+              >
+                <Shield className="w-5 h-5 mr-2" />
+                Try Demo
+              </Button>
+            </div>
+          </div>
+        </section>
+      </div>
     </div>
   );
 };

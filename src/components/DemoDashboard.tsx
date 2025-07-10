@@ -18,7 +18,7 @@ import NetworkSelector from "./NetworkSelector";
 import WalletStatus from "./WalletStatus";
 import { mockAssets, Asset } from "@/data/mockData";
 
-const Dashboard = () => {
+const DemoDashboard = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedAsset, setSelectedAsset] = useState<Asset | null>(null);
 
@@ -193,4 +193,4 @@ const Dashboard = () => {
   );
 };
 
-export default Dashboard;
+export default DemoDashboard;
