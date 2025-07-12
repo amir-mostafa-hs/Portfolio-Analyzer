@@ -8,6 +8,7 @@ import Settings from "./pages/Settings";
 import NotFound from "./pages/NotFound";
 import { AppKitProvider } from "./lib/web3Provider";
 import DemoPortfolio from "./pages/DemoPortfolio";
+import Navigation from "./components/Navigation";
 
 const App = () => (
   <AppKitProvider>
@@ -15,6 +16,7 @@ const App = () => (
       <Toaster />
       <Sonner />
       <BrowserRouter>
+        <Navigation />
         <Routes>
           <Route path="/" element={<Index />} />
           <Route path="/portfolio" element={<Portfolio />} />

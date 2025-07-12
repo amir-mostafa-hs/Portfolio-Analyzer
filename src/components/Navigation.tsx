@@ -21,7 +21,7 @@ const ConnectButton = () => {
 
   return (
     <Button
-      variant="connect"
+      variant={address ? "crypto" : "connect"}
       size="sm"
       className="md:w-auto w-full font-semibold"
       onClick={() => open()}

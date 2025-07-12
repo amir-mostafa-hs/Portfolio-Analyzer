@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -17,10 +17,28 @@ import ChartComponent from "./ChartComponent";
 import NetworkSelector from "./NetworkSelector";
 import WalletStatus from "./WalletStatus";
 import { mockAssets, Asset } from "@/data/mockData";
+import getWalletBalances from "@/lib/getWalletBalances";
+import { useAppKitAccount } from "@reown/appkit/react";
+import { useNavigate } from "react-router-dom";
 
 const Dashboard = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedAsset, setSelectedAsset] = useState<Asset | null>(null);
+  const { isConnected, address } = useAppKitAccount();
+  const navigate = useNavigate();
+  const [walletBalances, setWalletBalances] = useState([]);
+
+  useEffect(() => {
+    if (!isConnected) {
+      navigate("/");
+    } else {
+      getWalletBalances("0x38", address).then((data) => {
+        setWalletBalances(data);
+      });
+    }
+  }, [isConnected]);
+
+  if (!isConnected) return null;
 
   const filteredAssets = mockAssets.filter(
     (asset) =>
@@ -60,7 +78,7 @@ const Dashboard = () => {
         </div>
 
         {/* Portfolio Stats */}
-        <PortfolioStats />
+        <PortfolioStats walletBalances={walletBalances} />
 
         {/* Top Performers */}
         <Card className="bg-card/50 backdrop-blur-glass border-primary/10">

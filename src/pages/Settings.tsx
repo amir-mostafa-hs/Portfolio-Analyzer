@@ -14,7 +14,6 @@ import {
   Mail,
   Globe,
 } from "lucide-react";
-import Navigation from "@/components/Navigation";
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAppKitAccount } from "@reown/appkit/react";
@@ -32,8 +31,6 @@ const Settings = () => {
   if (!isConnected) return null;
   return (
     <div className="min-h-screen bg-background">
-      <Navigation />
-
       <div className="container mx-auto px-4 py-8 max-w-4xl">
         <div className="space-y-8">
           {/* Header */}

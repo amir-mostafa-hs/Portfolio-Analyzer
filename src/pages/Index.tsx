@@ -3,7 +3,6 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Wallet, ArrowRight, Shield } from "lucide-react";
-import Navigation from "@/components/Navigation";
 import HeroSection from "@/components/HeroSection";
 import { useToast } from "@/hooks/use-toast";
 import { useNavigate } from "react-router-dom";
@@ -57,7 +56,6 @@ const Index = () => {
   if (isConnecting) {
     return (
       <div className="min-h-screen bg-background">
-        <Navigation />
         <div className="min-h-screen bg-gradient-hero flex items-center justify-center p-4">
           <Card className="bg-card/50 backdrop-blur-glass border-primary/10 max-w-md w-full">
             <CardContent className="p-8 text-center">
@@ -83,7 +81,6 @@ const Index = () => {
   if (showDemo && !isConnected) {
     return (
       <div className="min-h-screen bg-background">
-        <Navigation />
         <div className="min-h-screen bg-gradient-hero flex items-center justify-center p-4">
           <Card className="bg-card/50 backdrop-blur-glass border-primary/10 max-w-md w-full">
             <CardContent className="p-8 text-center">
@@ -108,8 +105,6 @@ const Index = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <Navigation />
-
       <div>
         <HeroSection
           onConnectWallet={handleConnectWallet}
