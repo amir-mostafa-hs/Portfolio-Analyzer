@@ -17,9 +17,12 @@ import ChartComponent from "./ChartComponent";
 import NetworkSelector from "./NetworkSelector";
 import WalletStatus from "./WalletStatus";
 import { mockAssets, Asset } from "@/data/mockData";
-import getWalletBalances from "@/lib/getWalletBalances";
+import getWalletBalances, {
+  useCryptoDataService,
+} from "@/lib/getWalletBalances";
 import { useAppKitAccount } from "@reown/appkit/react";
 import { useNavigate } from "react-router-dom";
+import { Coin, CryptoTickerSlider } from "./CryptoTickerSlider";
 
 const Dashboard = () => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -27,13 +30,22 @@ const Dashboard = () => {
   const { isConnected, address } = useAppKitAccount();
   const navigate = useNavigate();
   const [walletBalances, setWalletBalances] = useState([]);
+  const [widgetData, setWidgetData] = useState<{
+    gainers: Coin[];
+    losers: Coin[];
+  }>({ gainers: [], losers: [] });
+
+  const { getTopMovers } = useCryptoDataService();
 
   useEffect(() => {
     if (!isConnected) {
       navigate("/");
     } else {
-      getWalletBalances("0x38", address).then((data) => {
-        setWalletBalances(data);
+      // getWalletBalances("0x38", address).then((data) => {
+      //   setWalletBalances(data);
+      // });
+      getTopMovers(10).then((data) => {
+        setWidgetData(data);
       });
     }
   }, [isConnected]);
@@ -81,42 +93,7 @@ const Dashboard = () => {
         <PortfolioStats walletBalances={walletBalances} />
 
         {/* Top Performers */}
-        <Card className="bg-card/50 backdrop-blur-glass border-primary/10">
-          <CardHeader>
-            <CardTitle className="text-lg font-semibold">
-              Top Performers (24h)
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="grid md:grid-cols-3 gap-4">
-              {topPerformers.map((asset) => (
-                <div
-                  key={asset.id}
-                  className="flex items-center space-x-3 p-3 rounded-lg bg-muted/10 hover:bg-muted/20 transition-colors cursor-pointer"
-                  onClick={() => handleAssetClick(asset)}
-                >
-                  <div className="w-8 h-8 bg-gradient-primary rounded-full flex items-center justify-center text-white font-bold text-sm">
-                    {asset.logo}
-                  </div>
-                  <div className="flex-1">
-                    <div className="font-medium">{asset.symbol}</div>
-                    <div className="text-sm text-muted-foreground">
-                      {asset.name}
-                    </div>
-                  </div>
-                  <div className="text-right">
-                    <div className="font-medium text-success">
-                      +{asset.change24h.toFixed(2)}%
-                    </div>
-                    <div className="text-sm text-muted-foreground">
-                      ${asset.price.toFixed(2)}
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </CardContent>
-        </Card>
+        <CryptoTickerSlider data={widgetData} />
 
         {/* Chart Section */}
         <div className="grid lg:grid-cols-4 gap-6">
