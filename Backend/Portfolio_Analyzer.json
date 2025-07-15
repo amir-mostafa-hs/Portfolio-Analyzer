@@ -1,0 +1,317 @@
+{
+  "name": "Portfolio Analyzer",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "a02f1bdf-3752-455d-9650-5cd51ad1c870",
+        "authentication": "basicAuth",
+        "responseMode": "responseNode",
+        "options": {
+          "allowedOrigins": "*"
+        }
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        -460,
+        -20
+      ],
+      "id": "93400129-1137-4431-b809-7914f1285dde",
+      "name": "Webhook",
+      "webhookId": "a02f1bdf-3752-455d-9650-5cd51ad1c870",
+      "credentials": {
+        "httpBasicAuth": {
+          "id": "OWPigZS5YmlpBXdr",
+          "name": "Unnamed credential"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [
+        1280,
+        -40
+      ],
+      "id": "c806ebf4-8d7d-413b-8a7f-7f39eaaa33cf",
+      "name": "Respond to Webhook"
+    },
+    {
+      "parameters": {
+        "url": "https://data-api.coindesk.com/news/v1/article/list",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "lang",
+              "value": "EN"
+            },
+            {
+              "name": "limit",
+              "value": "10"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        0,
+        -300
+      ],
+      "id": "aa6ae05c-4b40-41ed-951a-e827fe1d5b60",
+      "name": "CoinDesk API"
+    },
+    {
+      "parameters": {
+        "url": "https://cryptopanic.com/api/v1/posts/",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "auth_token",
+              "value": "e399188d29173dd40930fda52122242362a133a4"
+            },
+            {
+              "name": "currencies",
+              "value": "={{ $json.symbols }}"
+            },
+            {
+              "name": "public",
+              "value": "true"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        0,
+        -120
+      ],
+      "id": "d5431b79-79bd-412c-9273-71e2fab50b26",
+      "name": "CryptoPanic API"
+    },
+    {
+      "parameters": {
+        "numberInputs": 3
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.1,
+      "position": [
+        260,
+        -40
+      ],
+      "id": "d701ee12-efe4-4bb8-b1d3-61b68413ced3",
+      "name": "Merge"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Loop over input items and add a new field called 'myNewField' to the JSON of each one\nconst data = $input.first().json.body\n\nconst filterData = data.map((item)=> item.symbol)\n\nreturn {symbols:filterData.join(\",\")};"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -240,
+        -200
+      ],
+      "id": "25a652a4-f4bc-49a2-bf92-40ae281e340a",
+      "name": "Extract Symbols Code"
+    },
+    {
+      "parameters": {
+        "jsCode": "const coinDesk = $input.all()[0].json.Data\nconst cryptoPanic = $input.all()[1].json.results\n\nconst userAssets = $input.all()[2].json.body\n\nconst filteredCryptoPanic = cryptoPanic.map((item)=>{\n  return `title:${item.title}, description:${item.description}`\n})\n\nconst filteredCoinDesk = coinDesk.map((item)=>{\n  return `title:${item.TITLE}, description:${item.BODY}, sentiment:${item.SENTIMENT}`\n})\n\nconst filteredUserAssets = userAssets.map((item)=>{\n  return `symbol:${item.symbol}, name:${item.name}, balance:${item.balance_formatted}, usd_price:${item[\"usd_price\"]}, usd_price_24hr_percent_change:${item[\"usd_price_24hr_percent_change\"]}, usd_price_24hr_usd_change:${item[\"usd_price_24hr_usd_change\"]}, usd_value:${item[\"usd_value\"]}, usd_value_24hr_usd_change:${item[\"usd_value_24hr_usd_change\"]}, portfolio_percentage:${item[\"portfolio_percentage\"]}`\n})\n  \nreturn {\n  CryptoPanic_API: filteredCryptoPanic.join(\" - \"),\n  CoinDesk_API: filteredCoinDesk.join(\" - \"),\n  User_Assets: filteredUserAssets.join(\" - \")\n};"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        480,
+        -40
+      ],
+      "id": "a4e9108d-cc8b-4ec5-b40e-8394668a19f4",
+      "name": "Combine Data Code"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=You are an expert financial analyst specializing in cryptocurrency. Your task is to provide a balanced and actionable investment analysis based on the data provided. Your entire output must be a single, valid JSON object and nothing else.\n\nSection 1: User's Portfolio Context\n\nAssets Info: \"{{$json.User_Assets}}\"\n\nSection 2: Latest News & Data for this Assets\n\nKey News Headlines (from CryptoPanic):\n\n\"{{$json.CryptoPanic_API}}\"\n\nIn-Depth Analysis (from CoinDesk):\n\n\"{{$json.CoinDesk_API}}\"\n\nSection 3: Key General Market Trends (that may affect all assets)\n\nRegulatory Landscape: The CLARITY Act is being discussed to provide regulatory certainty for digital assets, which could unlock institutional adoption and growth for the entire market.\n\nFinancial System Integration: The adoption of the ISO 20022 standard by systems like Fedwire is pushing blockchain solutions (like XRP) into the mainstream of banking infrastructure, signaling a move towards real-world utility.\n\nNew Investment Vehicles: The emergence of publicly traded, specialized firms like \"MemeStrategy\" indicates a maturing market where even highly speculative asset classes are being institutionalized.\n\nSection 4: Your Task (Main Instruction)\nBased on all the context provided above, generate a complete analysis. Your response must be only a JSON object with the following structure:\n\n```json\n{\n  \"assets_symbols\": \"The symbol of the assets being analyzed\",\n  \"analysis_summary\": \"A 2-3 sentence summary of the current situation for the asset, covering the most critical influencing factors.\",\n  \"bullish_points\": [\n    \"First positive point (e.g., 'A major $1B token burn was recently completed, reducing supply.').\",\n    \"Second positive point (e.g., 'Positive regulatory news has emerged, increasing institutional interest.').\"\n  ],\n  \"bearish_points\": [\n    \"First negative point or risk (e.g., 'The broader market is experiencing high volatility.').\",\n    \"Second negative point or risk (e.g., 'New competitors are emerging in its sector.').\"\n  ],\n  \"actionable_suggestion\": \"Provide a concrete, actionable suggestion. Use phrases like 'HOLD', 'CONSIDER PARTIAL PROFIT-TAKING', or 'FURTHER RESEARCH NEEDED'. Avoid direct and simplistic 'Buy' or 'Sell' commands.\",\n  \"confidence_score\": \"A numerical score from 1 to 5 indicating your confidence level in this analysis, where 1 is very low and 5 is very high.\"\n}\n```\n",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1.8,
+      "position": [
+        740,
+        -40
+      ],
+      "id": "c6cdcb8d-aaf9-4ae9-9a90-65f6cb1c13f4",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "modelName": "models/gemini-2.0-flash-lite",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        740,
+        180
+      ],
+      "id": "29b5002c-85b8-49fd-a2f6-212ac4722e0e",
+      "name": "Google Gemini Chat Model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "p4Q166RnIt8YSdZ5",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const aiOutpuo = $input.first().json.output\n\nconst jsonString = aiOutpuo.replace(\"```json\\n\", \"\").replace(\"\\n```\", \"\").trim();\n\nreturn JSON.parse(jsonString);"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1080,
+        -40
+      ],
+      "id": "8daa410e-e8d5-485b-9536-067d9b0a4235",
+      "name": "Pars Output Code"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Extract Symbols Code",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 2
+          }
+        ]
+      ]
+    },
+    "CoinDesk API": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "CryptoPanic API": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Merge": {
+      "main": [
+        [
+          {
+            "node": "Combine Data Code",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Respond to Webhook": {
+      "main": [
+        []
+      ]
+    },
+    "Extract Symbols Code": {
+      "main": [
+        [
+          {
+            "node": "CryptoPanic API",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "CoinDesk API",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Combine Data Code": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "Pars Output Code",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Pars Output Code": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "a1a124d2-372a-4744-aaf1-9fddc0b23773",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "51886c499bf29b69b2fceb67e23eb0d0659f2402f3721a7bfc07290c48c920bd"
+  },
+  "id": "uzamMBdzahOdyFVY",
+  "tags": []
+}
