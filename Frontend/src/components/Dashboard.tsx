@@ -41,9 +41,9 @@ const Dashboard = () => {
     if (!isConnected) {
       navigate("/");
     } else {
-      // getWalletBalances("0x38", address).then((data) => {
-      //   setWalletBalances(data);
-      // });
+      getWalletBalances("0x38", address).then((data) => {
+        setWalletBalances(data);
+      });
       getTopMovers(10).then((data) => {
         setWidgetData(data);
       });
