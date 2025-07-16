@@ -9,14 +9,14 @@ import { WagmiAdapter } from "@reown/appkit-adapter-wagmi";
 const queryClient = new QueryClient();
 
 // 1. Get projectId from https://cloud.reown.com
-const projectId = "a95960ad908675660d0f873d1d781baa";
+const projectId = import.meta.env.VITE_CLOUD_REOWN_PROJECT_ID;
 
 // 2. Create a metadata object - optional
 const metadata = {
   name: "Portfolio-Analyzer",
   description: "Portfolio Analyzer",
-  url: "https://portfolio-analyzer.vercel.app", // origin must match your domain & subdomain
-  icons: ["https://portfolio-analyzer.vercel.app/favicon.ico"],
+  url: import.meta.env.VITE_CLOUD_REOWN_URL, // origin must match your domain & subdomain
+  icons: [import.meta.env.VITE_CLOUD_REOWN_ICON],
 };
 
 // 3. Set the networks
