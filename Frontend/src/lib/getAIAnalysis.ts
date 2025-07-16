@@ -3,7 +3,7 @@ const getAIAnalysis = async (data: unknown, userAddress: string) => {
   const cached = JSON.parse(localStorage.getItem(userAddress));
 
   // Check cache expiration (10 minutes)
-  if (cached && cached.expiresAt > now) {
+  if (cached && cached?.expiresAt > now) {
     return cached.data;
   }
 

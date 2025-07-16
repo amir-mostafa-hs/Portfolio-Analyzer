@@ -7,7 +7,7 @@ const getWalletBalances = async (
 
   const cached = JSON.parse(localStorage.getItem(key));
 
-  if (cached && cached.expiresAt > now) {
+  if (cached && cached?.expiresAt > now) {
     return cached.data;
   }
 
@@ -102,7 +102,7 @@ const useCryptoDataService = () => {
   const getTopMovers = async (limit = 20) => {
     const topMoversCache = JSON.parse(localStorage.getItem("topMoversCache"));
     const now = Date.now();
-    if (topMoversCache.data && topMoversCache.expiresAt > now) {
+    if (topMoversCache && topMoversCache?.expiresAt > now) {
       return topMoversCache.data;
     }
 
@@ -140,7 +140,7 @@ const useCryptoDataService = () => {
     const now = Date.now();
     const cached = JSON.parse(localStorage.getItem(key));
 
-    if (cached && cached.expiresAt > now) {
+    if (cached && cached?.expiresAt > now) {
       return cached.data;
     }
 
@@ -169,7 +169,7 @@ const useCryptoDataService = () => {
     const key = `${coinId}:${days}`;
     const now = Date.now();
     const cached = JSON.parse(localStorage.getItem(key));
-    if (cached && cached.expiresAt > now) {
+    if (cached && cached?.expiresAt > now) {
       return cached.data;
     }
 

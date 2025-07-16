@@ -134,7 +134,7 @@ const Dashboard = () => {
         </div> */}
 
         {/* Ai Analysis */}
-        {/* AIAnalysis && <PortfolioAnalysis analysisData={AIAnalysis} /> */}
+        {AIAnalysis && <PortfolioAnalysis analysisData={AIAnalysis} />}
 
         {/* Main Content Grid */}
         <div className="grid lg:grid-cols-4 gap-6">
