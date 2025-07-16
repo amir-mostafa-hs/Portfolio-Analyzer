@@ -11,7 +11,6 @@ import { cn } from "@/lib/utils";
 import { useEffect, useState } from "react";
 
 const PortfolioStats = ({ walletBalances }) => {
-  console.log(walletBalances);
   const [totalValue, setTotalValue] = useState(0);
   const [totalChange24h, setTotalChange24h] = useState(0);
   const [TotalGainOrLoss, setTotalGainOrLoss] = useState(0);

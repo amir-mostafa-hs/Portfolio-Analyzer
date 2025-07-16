@@ -12,11 +12,61 @@ import {
 } from "lucide-react";
 import PortfolioStats from "./PortfolioStats";
 import AssetCard from "./AssetCard";
-import TransactionHistory from "./TransactionHistory";
+import TransactionHistoryDemo from "./TransactionHistoryDemo";
 import ChartComponent from "./ChartComponent";
 import NetworkSelector from "./NetworkSelector";
 import WalletStatus from "./WalletStatus";
 import { mockAssets, Asset } from "@/data/mockData";
+
+const walletBalances = [
+  {
+    token_address: "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+    symbol: "BNB",
+    name: "Binance Chain Native Token",
+    logo: "https://cdn.moralis.io/bsc/0x.png",
+    thumbnail: "https://cdn.moralis.io/bsc/0x_thumb.png",
+    decimals: 18,
+    balance: "81354349000000000",
+    possible_spam: false,
+    verified_contract: true,
+    total_supply: null,
+    total_supply_formatted: null,
+    percentage_relative_to_total_supply: null,
+    security_score: 99,
+    balance_formatted: "0.081354349",
+    usd_price: 684.1789726809523,
+    usd_price_24hr_percent_change: -0.7493522048051836,
+    usd_price_24hr_usd_change: -5.179305539650045,
+    usd_value: 55.66093492194766,
+    usd_value_24hr_usd_change: -0.42135903045032314,
+    native_token: true,
+    portfolio_percentage: 1.315515161339417,
+  },
+  {
+    token_address: "0xc4a1e7106d08b7ff947254b6d75cf2b877d55daf",
+    symbol: "LQR",
+    name: "Laqira Token",
+    logo: "https://logo.moralis.io/0x38_0xc4a1e7106d08b7ff947254b6d75cf2b877d55daf_18d1bcc3f3b32d63f8ebffee05ad7cde.png",
+    thumbnail:
+      "https://logo.moralis.io/0x38_0xc4a1e7106d08b7ff947254b6d75cf2b877d55daf_18d1bcc3f3b32d63f8ebffee05ad7cde.png",
+    decimals: 18,
+    balance: "845572558408179688185",
+    possible_spam: false,
+    verified_contract: true,
+    total_supply: "2500000000000000000000000000",
+    total_supply_formatted: "2500000000",
+    percentage_relative_to_total_supply: 0.000033822902336327,
+    security_score: 47,
+    balance_formatted: "845.572558408179688185",
+    usd_price: 0.07439128912436752,
+    usd_price_24hr_percent_change: -1.687500090965326,
+    usd_price_24hr_usd_change: -0.0012755525279089935,
+    usd_value: 62.903232668174034,
+    usd_value_24hr_usd_change: -1.0785722144080288,
+    native_token: false,
+    portfolio_percentage: 1.4866828303959128,
+  },
+];
 
 const DemoDashboard = () => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -33,7 +83,10 @@ const DemoDashboard = () => {
   };
 
   const topPerformers = [...mockAssets]
-    .sort((a, b) => b.change24h - a.change24h)
+    .sort(
+      (a, b) =>
+        b.usd_price_24hr_percent_change - a.usd_price_24hr_percent_change
+    )
     .slice(0, 3);
 
   return (
@@ -60,7 +113,7 @@ const DemoDashboard = () => {
         </div>
 
         {/* Portfolio Stats */}
-        <PortfolioStats />
+        <PortfolioStats walletBalances={walletBalances} />
 
         {/* Top Performers */}
         <Card className="bg-card/50 backdrop-blur-glass border-primary/10">
@@ -73,7 +126,7 @@ const DemoDashboard = () => {
             <div className="grid md:grid-cols-3 gap-4">
               {topPerformers.map((asset) => (
                 <div
-                  key={asset.id}
+                  key={asset.token_address}
                   className="flex items-center space-x-3 p-3 rounded-lg bg-muted/10 hover:bg-muted/20 transition-colors cursor-pointer"
                   onClick={() => handleAssetClick(asset)}
                 >
@@ -88,10 +141,10 @@ const DemoDashboard = () => {
                   </div>
                   <div className="text-right">
                     <div className="font-medium text-success">
-                      +{asset.change24h.toFixed(2)}%
+                      +{asset.usd_price_24hr_percent_change.toFixed(2)}%
                     </div>
                     <div className="text-sm text-muted-foreground">
-                      ${asset.price.toFixed(2)}
+                      ${asset.usd_price.toFixed(2)}
                     </div>
                   </div>
                 </div>
@@ -101,14 +154,14 @@ const DemoDashboard = () => {
         </Card>
 
         {/* Chart Section */}
-        <div className="grid lg:grid-cols-4 gap-6">
+        {/* <div className="grid lg:grid-cols-4 gap-6">
           <div className="lg:col-span-3">
             <ChartComponent asset={selectedAsset} />
           </div>
           <div>
             <WalletStatus />
           </div>
-        </div>
+        </div> */}
 
         {/* Main Content Grid */}
         <div className="grid lg:grid-cols-4 gap-6">
@@ -141,7 +194,7 @@ const DemoDashboard = () => {
                 <div className="grid gap-4">
                   {filteredAssets.map((asset) => (
                     <AssetCard
-                      key={asset.id}
+                      key={asset.token_address}
                       asset={asset}
                       onClick={handleAssetClick}
                     />
@@ -153,7 +206,7 @@ const DemoDashboard = () => {
 
           {/* Sidebar */}
           <div className="lg:col-span-2 space-y-6">
-            <TransactionHistory />
+            <TransactionHistoryDemo />
 
             {/* Quick Actions */}
             <Card className="bg-card/50 backdrop-blur-glass border-primary/10">

@@ -1,18 +1,29 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 export interface Asset {
-  id: string;
-  symbol: string;
-  name: string;
-  balance: number;
-  price: number;
-  change24h: number;
-  change7d: number;
-  change30d: number;
-  value: number;
+  balance: string;
+  balance_formatted: string;
+  decimals: number;
   logo: string;
-  network: string;
+  name: string;
+  native_token: boolean;
+  percentage_relative_to_total_supply: any | null;
+  portfolio_percentage: number;
+  possible_spam: boolean;
+  security_score: number;
+  symbol: string;
+  thumbnail: string;
+  token_address: string;
+  total_supply: any | null;
+  total_supply_formatted: any | null;
+  usd_price: number;
+  usd_price_24hr_percent_change: number;
+  usd_price_24hr_usd_change: number;
+  usd_value: number;
+  usd_value_24hr_usd_change: number;
+  verified_contract: boolean;
 }
 
-export interface Transaction {
+export interface TransactionMock {
   id: string;
   type: "buy" | "sell" | "send" | "receive";
   asset: string;
@@ -22,6 +33,80 @@ export interface Transaction {
   hash: string;
   status: "completed" | "pending" | "failed";
 }
+
+export type Transaction = {
+  hash: string;
+  nonce: string;
+  transaction_index: string;
+  from_address_entity: any | null;
+  from_address_entity_logo: any | null;
+  from_address: string;
+  from_address_label: any | null;
+  to_address_entity: any | null;
+  to_address_entity_logo: any | null;
+  to_address: string;
+  to_address_label: any | null;
+  value: string;
+  gas: string;
+  gas_price: string;
+  receipt_cumulative_gas_used: string;
+  receipt_gas_used: string;
+  receipt_contract_address: any | null;
+  receipt_status: string;
+  block_timestamp: string;
+  block_number: string;
+  block_hash: string;
+  transaction_fee: string;
+  method_label: any | null;
+  nft_transfers: any[];
+  erc20_transfers: [
+    {
+      token_name: string;
+      token_symbol: string;
+      token_logo: string;
+      token_decimals: string;
+      from_address_entity: any | null;
+      from_address_entity_logo: any | null;
+      from_address: string;
+      from_address_label: any | null;
+      to_address_entity: any | null;
+      to_address_entity_logo: any | null;
+      to_address: string;
+      to_address_label: any | null;
+      address: string;
+      log_index: number;
+      value: string;
+      possible_spam: boolean;
+      verified_contract: boolean;
+      security_score: number;
+      direction: string;
+      value_formatted: string;
+    }
+  ];
+  native_transfers: [];
+  summary: string;
+  possible_spam: boolean;
+  category: string;
+  contract_interactions?: {
+    approvals: [
+      {
+        value: string;
+        value_formatted: string;
+        token: {
+          address: string;
+          address_label: any | null;
+          token_name: string;
+          token_logo: string;
+          token_symbol: string;
+        };
+        spender: {
+          address: string;
+          address_label: any | null;
+        };
+      }
+    ];
+  };
+};
 
 export interface Network {
   id: string;
@@ -36,86 +121,55 @@ export interface Network {
 
 export const mockAssets: Asset[] = [
   {
-    id: "1",
-    symbol: "BTC",
-    name: "Bitcoin",
-    balance: 0.5234,
-    price: 43250.75,
-    change24h: 2.34,
-    change7d: -1.67,
-    change30d: 8.92,
-    value: 22633.85,
-    logo: "₿",
-    network: "bitcoin",
-  },
-  {
-    id: "2",
-    symbol: "ETH",
-    name: "Ethereum",
-    balance: 3.2468,
-    price: 2650.42,
-    change24h: -0.89,
-    change7d: 3.21,
-    change30d: 12.45,
-    value: 8607.32,
-    logo: "Ξ",
-    network: "ethereum",
-  },
-  {
-    id: "3",
-    symbol: "USDT",
-    name: "Tether",
-    balance: 1250.0,
-    price: 1.0,
-    change24h: 0.01,
-    change7d: 0.02,
-    change30d: -0.01,
-    value: 1250.0,
-    logo: "₮",
-    network: "ethereum",
-  },
-  {
-    id: "4",
+    token_address: "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
     symbol: "BNB",
-    name: "Binance Coin",
-    balance: 12.567,
-    price: 315.89,
-    change24h: 1.76,
-    change7d: -2.34,
-    change30d: 7.23,
-    value: 3970.24,
-    logo: "BNB",
-    network: "bsc",
+    name: "Binance Chain Native Token",
+    logo: "https://cdn.moralis.io/bsc/0x.png",
+    thumbnail: "https://cdn.moralis.io/bsc/0x_thumb.png",
+    decimals: 18,
+    balance: "81354349000000000",
+    possible_spam: false,
+    verified_contract: true,
+    total_supply: null,
+    total_supply_formatted: null,
+    percentage_relative_to_total_supply: null,
+    security_score: 99,
+    balance_formatted: "0.081354349",
+    usd_price: 687.4750100276764,
+    usd_price_24hr_percent_change: -0.8780518155633413,
+    usd_price_24hr_usd_change: -6.081386189439968,
+    usd_value: 55.92908189457009,
+    usd_value_24hr_usd_change: -0.4947472144594793,
+    native_token: true,
+    portfolio_percentage: 1.3217493744091926,
   },
   {
-    id: "5",
-    symbol: "ADA",
-    name: "Cardano",
-    balance: 2450.5,
-    price: 0.485,
-    change24h: 3.45,
-    change7d: 8.92,
-    change30d: -4.67,
-    value: 1188.49,
-    logo: "ADA",
-    network: "cardano",
-  },
-  {
-    id: "6",
-    symbol: "MATIC",
-    name: "Polygon",
-    balance: 890.75,
-    price: 0.892,
-    change24h: -2.15,
-    change7d: 5.67,
-    change30d: 15.34,
-    value: 794.63,
-    logo: "MATIC",
-    network: "polygon",
+    token_address: "0xc4a1e7106d08b7ff947254b6d75cf2b877d55daf",
+    symbol: "LQR",
+    name: "Laqira Token",
+    logo: "https://logo.moralis.io/0x38_0xc4a1e7106d08b7ff947254b6d75cf2b877d55daf_18d1bcc3f3b32d63f8ebffee05ad7cde.png",
+    thumbnail:
+      "https://logo.moralis.io/0x38_0xc4a1e7106d08b7ff947254b6d75cf2b877d55daf_18d1bcc3f3b32d63f8ebffee05ad7cde.png",
+    decimals: 18,
+    balance: "845572558408179688185",
+    possible_spam: false,
+    verified_contract: true,
+    total_supply: "2500000000000000000000000000",
+    total_supply_formatted: "2500000000",
+    percentage_relative_to_total_supply: 0.000033822902336327,
+    security_score: 47,
+    balance_formatted: "845.572558408179688185",
+    usd_price: 0.07446520708309118,
+    usd_price_24hr_percent_change: -1.636454476233817,
+    usd_price_24hr_usd_change: -0.0012388626376360068,
+    usd_value: 62.96573566564431,
+    usd_value_24hr_usd_change: -1.047548250022184,
+    native_token: false,
+    portfolio_percentage: 1.4880437673224152,
   },
 ];
 
-export const mockTransactions: Transaction[] = [
+export const mockTransactions: TransactionMock[] = [
   {
     id: "1",
     type: "buy",

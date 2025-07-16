@@ -7,64 +7,85 @@ import {
   Filter,
   Plus,
   RefreshCw,
-  TrendingUp,
+  // TrendingUp,
   BarChart3,
 } from "lucide-react";
 import PortfolioStats from "./PortfolioStats";
 import AssetCard from "./AssetCard";
 import TransactionHistory from "./TransactionHistory";
-import ChartComponent from "./ChartComponent";
+// import ChartComponent from "./ChartComponent";
 import NetworkSelector from "./NetworkSelector";
-import WalletStatus from "./WalletStatus";
-import { mockAssets, Asset } from "@/data/mockData";
+// import WalletStatus from "./WalletStatus";
+import { Asset } from "@/data/mockData";
 import getWalletBalances, {
   useCryptoDataService,
+  getWalletHistory,
 } from "@/lib/getWalletBalances";
 import { useAppKitAccount } from "@reown/appkit/react";
 import { useNavigate } from "react-router-dom";
 import { Coin, CryptoTickerSlider } from "./CryptoTickerSlider";
+import PortfolioAnalysis, { AnalysisData } from "./PortfolioAnalysis";
+import getAIAnalysis from "@/lib/getAIAnalysis";
 
 const Dashboard = () => {
-  const [searchTerm, setSearchTerm] = useState("");
-  const [selectedAsset, setSelectedAsset] = useState<Asset | null>(null);
   const { isConnected, address } = useAppKitAccount();
+  const { getTopMovers } = useCryptoDataService();
+
+  const [searchTerm, setSearchTerm] = useState("");
+  // const [selectedAsset, setSelectedAsset] = useState<Asset | null>(null);
   const navigate = useNavigate();
-  const [walletBalances, setWalletBalances] = useState([]);
+  const [walletBalances, setWalletBalances] = useState({
+    data: [],
+    unsafeData: [],
+  });
   const [widgetData, setWidgetData] = useState<{
     gainers: Coin[];
     losers: Coin[];
   }>({ gainers: [], losers: [] });
-
-  const { getTopMovers } = useCryptoDataService();
+  const [transactionHistory, setTransactionHistory] = useState([]);
+  const [AIAnalysis, setAIAnalysis] = useState<AnalysisData>(null);
 
   useEffect(() => {
     if (!isConnected) {
       navigate("/");
     } else {
-      getWalletBalances("0x38", address).then((data) => {
-        setWalletBalances(data);
+      // get user wallet balances
+      getWalletBalances("0x38", address).then((result) => {
+        setWalletBalances(result);
       });
+      // get top market gainers and losers
       getTopMovers(10).then((data) => {
         setWidgetData(data);
+      });
+      // get user wallet transaction history
+      getWalletHistory("0x38", address, 10).then((data) => {
+        setTransactionHistory(data);
+      });
+      // get AI analysis
+      getAIAnalysis(walletBalances.data).then((data) => {
+        setAIAnalysis(data);
       });
     }
   }, [isConnected]);
 
   if (!isConnected) return null;
 
-  const filteredAssets = mockAssets.filter(
-    (asset) =>
-      asset.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      asset.symbol.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  const filteredAssets = walletBalances.unsafeData
+    .filter((asset) => {
+      if (asset) {
+        return (
+          asset.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          asset.symbol.toLowerCase().includes(searchTerm.toLowerCase())
+        );
+      }
+    })
+    .sort((a, b) => {
+      return b.usd_price - a.usd_price;
+    });
 
   const handleAssetClick = (asset: Asset) => {
-    setSelectedAsset(asset);
+    // setSelectedAsset(asset);
   };
-
-  const topPerformers = [...mockAssets]
-    .sort((a, b) => b.change24h - a.change24h)
-    .slice(0, 3);
 
   return (
     <div className="min-h-screen bg-gradient-hero p-4 md:p-6">
@@ -90,20 +111,23 @@ const Dashboard = () => {
         </div>
 
         {/* Portfolio Stats */}
-        <PortfolioStats walletBalances={walletBalances} />
+        <PortfolioStats walletBalances={walletBalances.data} />
 
         {/* Top Performers */}
         <CryptoTickerSlider data={widgetData} />
 
         {/* Chart Section */}
-        <div className="grid lg:grid-cols-4 gap-6">
+        {/* <div className="grid lg:grid-cols-4 gap-6">
           <div className="lg:col-span-3">
             <ChartComponent asset={selectedAsset} />
           </div>
           <div>
             <WalletStatus />
           </div>
-        </div>
+        </div> */}
+
+        {/* Ai Analysis */}
+        {AIAnalysis && <PortfolioAnalysis analysisData={AIAnalysis} />}
 
         {/* Main Content Grid */}
         <div className="grid lg:grid-cols-4 gap-6">
@@ -126,17 +150,17 @@ const Dashboard = () => {
                         className="pl-10 w-64"
                       />
                     </div>
-                    <Button variant="ghost" size="sm">
+                    {/* <Button variant="ghost" size="sm">
                       <Filter className="w-4 h-4" />
-                    </Button>
+                    </Button> */}
                   </div>
                 </div>
               </CardHeader>
               <CardContent>
                 <div className="grid gap-4">
-                  {filteredAssets.map((asset) => (
+                  {filteredAssets?.map((asset) => (
                     <AssetCard
-                      key={asset.id}
+                      key={asset.token_address}
                       asset={asset}
                       onClick={handleAssetClick}
                     />
@@ -148,10 +172,10 @@ const Dashboard = () => {
 
           {/* Sidebar */}
           <div className="lg:col-span-2 space-y-6">
-            <TransactionHistory />
+            <TransactionHistory transactions={transactionHistory} />
 
             {/* Quick Actions */}
-            <Card className="bg-card/50 backdrop-blur-glass border-primary/10">
+            {/* <Card className="bg-card/50 backdrop-blur-glass border-primary/10">
               <CardHeader>
                 <CardTitle className="text-lg font-semibold">
                   Quick Actions
@@ -177,7 +201,7 @@ const Dashboard = () => {
                   Set Alerts
                 </Button>
               </CardContent>
-            </Card>
+            </Card> */}
           </div>
         </div>
 
