@@ -1,17 +1,14 @@
-// const cache = new Map<string, { data: unknown; expiresAt: number }>();
-
 const getAIAnalysis = async (data: unknown, userAddress: string) => {
-  // const now = Date.now();
-  // const cached = cache.get(userAddress);
+  const now = Date.now();
+  const cached = JSON.parse(localStorage.getItem(userAddress));
 
   // Check cache expiration (10 minutes)
-  // if (cached && cached.expiresAt > now) {
-  //   return cached.data;
-  // }
+  if (cached && cached.expiresAt > now) {
+    return cached.data;
+  }
 
   try {
     const parsedBody = JSON.stringify(data);
-    console.log(parsedBody);
     const response = await fetch(import.meta.env.VITE_N8N_API, {
       method: "POST",
       body: parsedBody,
@@ -25,10 +22,13 @@ const getAIAnalysis = async (data: unknown, userAddress: string) => {
     const result = await response.json();
 
     // Cache result with expiration
-    // cache.set(userAddress, {
-    //   data: result,
-    //   expiresAt: now + 10 * 60 * 1000, // 10 minutes
-    // });
+    localStorage.setItem(
+      userAddress,
+      JSON.stringify({
+        data: result,
+        expiresAt: now + 10 * 60 * 1000, // 10 minutes
+      })
+    );
 
     return result;
   } catch (e) {

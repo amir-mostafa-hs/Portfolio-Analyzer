@@ -1,8 +1,3 @@
-const walletBalancesCache = new Map<
-  string,
-  { data: { data: unknown[]; unsafeData: unknown[] }; expiresAt: number }
->();
-
 const getWalletBalances = async (
   chain: string,
   address: string
@@ -10,7 +5,8 @@ const getWalletBalances = async (
   const key = `${chain}:${address}`;
   const now = Date.now();
 
-  const cached = walletBalancesCache.get(key);
+  const cached = JSON.parse(localStorage.getItem(key));
+
   if (cached && cached.expiresAt > now) {
     return cached.data;
   }
@@ -36,10 +32,13 @@ const getWalletBalances = async (
 
     const result = { data: filteredData, unsafeData: data.result };
 
-    walletBalancesCache.set(key, {
-      data: result,
-      expiresAt: now + 10 * 60 * 1000, // 10 minutes
-    });
+    localStorage.setItem(
+      key,
+      JSON.stringify({
+        data: result,
+        expiresAt: now + 10 * 60 * 1000, // 10 minutes
+      })
+    );
 
     return result;
   } catch (e) {
@@ -50,11 +49,6 @@ const getWalletBalances = async (
 
 export default getWalletBalances;
 
-const walletHistoryCache = new Map<
-  string,
-  { data: unknown; expiresAt: number }
->();
-
 const getWalletHistory = async (
   chain: string,
   address: string,
@@ -62,7 +56,7 @@ const getWalletHistory = async (
 ) => {
   const key = `${chain}:${address}:${limit}`;
   const now = Date.now();
-  const cached = walletHistoryCache.get(key);
+  const cached = JSON.parse(localStorage.getItem(key));
 
   if (cached && cached.expiresAt > now) {
     return cached.data;
@@ -82,10 +76,13 @@ const getWalletHistory = async (
     const data = await response.json();
     const result = data?.result || [];
 
-    walletHistoryCache.set(key, {
-      data: result,
-      expiresAt: now + 10 * 60 * 1000, // 10 minutes
-    });
+    localStorage.setItem(
+      key,
+      JSON.stringify({
+        data: result,
+        expiresAt: now + 10 * 60 * 1000, // 10 minutes
+      })
+    );
 
     return result;
   } catch (e) {
@@ -97,14 +94,13 @@ const getWalletHistory = async (
 const useCryptoDataService = () => {
   const baseURL = "https://api.coingecko.com/api/v3";
 
-  const topMoversCache = { data: null, expiresAt: 0 };
-  const candleCache = new Map<string, { data: unknown; expiresAt: number }>();
   const historicalCache = new Map<
     string,
     { data: unknown; expiresAt: number }
   >();
 
   const getTopMovers = async (limit = 20) => {
+    const topMoversCache = JSON.parse(localStorage.getItem("topMoversCache"));
     const now = Date.now();
     if (topMoversCache.data && topMoversCache.expiresAt > now) {
       return topMoversCache.data;
@@ -124,8 +120,13 @@ const useCryptoDataService = () => {
         .slice(0, limit);
 
       const result = { gainers, losers };
-      topMoversCache.data = result;
-      topMoversCache.expiresAt = now + 5 * 60 * 1000; // 5 دقیقه کش
+      localStorage.setItem(
+        "topMoversCache",
+        JSON.stringify({
+          data: result,
+          expiresAt: now + 5 * 60 * 1000, // 5 دقیقه کش
+        })
+      );
 
       return result;
     } catch (error) {
@@ -137,7 +138,8 @@ const useCryptoDataService = () => {
   const getCandleData = async (coinId: string, days = 7) => {
     const key = `${coinId}:${days}`;
     const now = Date.now();
-    const cached = candleCache.get(key);
+    const cached = JSON.parse(localStorage.getItem(key));
+
     if (cached && cached.expiresAt > now) {
       return cached.data;
     }
@@ -148,10 +150,13 @@ const useCryptoDataService = () => {
       );
       const data = await response.json();
 
-      candleCache.set(key, {
-        data,
-        expiresAt: now + 5 * 60 * 1000,
-      });
+      localStorage.setItem(
+        key,
+        JSON.stringify({
+          data,
+          expiresAt: now + 5 * 60 * 1000,
+        })
+      );
 
       return data;
     } catch (error) {
@@ -163,7 +168,7 @@ const useCryptoDataService = () => {
   const getHistoricalData = async (coinId: string, days = 1) => {
     const key = `${coinId}:${days}`;
     const now = Date.now();
-    const cached = historicalCache.get(key);
+    const cached = JSON.parse(localStorage.getItem(key));
     if (cached && cached.expiresAt > now) {
       return cached.data;
     }
@@ -174,10 +179,13 @@ const useCryptoDataService = () => {
       );
       const data = await response.json();
 
-      historicalCache.set(key, {
-        data,
-        expiresAt: now + 5 * 60 * 1000,
-      });
+      localStorage.setItem(
+        key,
+        JSON.stringify({
+          data,
+          expiresAt: now + 5 * 60 * 1000,
+        })
+      );
 
       return data;
     } catch (error) {

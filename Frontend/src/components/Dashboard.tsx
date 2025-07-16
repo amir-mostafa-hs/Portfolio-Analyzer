@@ -68,7 +68,6 @@ const Dashboard = () => {
   }, [isConnected, address]);
 
   useEffect(() => {
-    console.log("first: --------------------------");
     if (walletBalances.data.length > 0 && isConnected && address) {
       getAIAnalysis(walletBalances.data, address).then((data) => {
         setAIAnalysis(data);
@@ -135,7 +134,7 @@ const Dashboard = () => {
         </div> */}
 
         {/* Ai Analysis */}
-        {AIAnalysis && <PortfolioAnalysis analysisData={AIAnalysis} />}
+        {/* AIAnalysis && <PortfolioAnalysis analysisData={AIAnalysis} /> */}
 
         {/* Main Content Grid */}
         <div className="grid lg:grid-cols-4 gap-6">
