@@ -40,7 +40,8 @@ const TickerSlider = ({
   return (
     <div className="relative overflow-hidden w-full border rounded-xl">
       <motion.div
-        className={cn("flex whitespace-nowrap", reverse && "flex-row-reverse")}
+        className={cn("flex whitespace-nowrap")}
+        style={{ direction: reverse ? "rtl" : "ltr" }}
         ref={containerRef}
         animate={{
           x: reverse ? [0, width] : [0, -width],
@@ -57,6 +58,7 @@ const TickerSlider = ({
           <div
             key={`${coin.id}-${index}`}
             className="flex items-center space-x-3 mx-2 my-2 px-4 py-2 rounded-lg bg-muted/20 hover:bg-muted/40 transition-colors min-w-[240px] max-w-[300px]"
+            style={reverse ? { direction: "ltr" } : {}}
           >
             <div className="rounded-full flex items-center justify-center text-white font-bold text-sm">
               <img src={coin.image} alt={coin.name} className="w-8 h-8" />
