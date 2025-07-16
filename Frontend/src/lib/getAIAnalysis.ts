@@ -1,13 +1,13 @@
-const cache = new Map<string, { data: unknown; expiresAt: number }>();
+// const cache = new Map<string, { data: unknown; expiresAt: number }>();
 
 const getAIAnalysis = async (data: unknown, userAddress: string) => {
-  const now = Date.now();
-  const cached = cache.get(userAddress);
+  // const now = Date.now();
+  // const cached = cache.get(userAddress);
 
   // Check cache expiration (10 minutes)
-  if (cached && cached.expiresAt > now) {
-    return cached.data;
-  }
+  // if (cached && cached.expiresAt > now) {
+  //   return cached.data;
+  // }
 
   try {
     const parsedBody = JSON.stringify(data);
@@ -25,10 +25,10 @@ const getAIAnalysis = async (data: unknown, userAddress: string) => {
     const result = await response.json();
 
     // Cache result with expiration
-    cache.set(userAddress, {
-      data: result,
-      expiresAt: now + 10 * 60 * 1000, // 10 minutes
-    });
+    // cache.set(userAddress, {
+    //   data: result,
+    //   expiresAt: now + 10 * 60 * 1000, // 10 minutes
+    // });
 
     return result;
   } catch (e) {
