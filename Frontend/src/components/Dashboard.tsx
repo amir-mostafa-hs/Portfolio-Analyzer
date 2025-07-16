@@ -48,27 +48,33 @@ const Dashboard = () => {
   useEffect(() => {
     if (!isConnected) {
       navigate("/");
-    } else {
-      // get user wallet balances
-      getWalletBalances("0x38", address).then((result) => {
-        setWalletBalances(result);
-      });
-      // get top market gainers and losers
-      getTopMovers(10).then((data) => {
-        setWidgetData(data);
-      });
-      // get user wallet transaction history
-      getWalletHistory("0x38", address, 10).then((data) => {
-        setTransactionHistory(data);
-      });
-      // get AI analysis
-      if (walletBalances.data.length > 0) {
-        getAIAnalysis(walletBalances.data, address).then((data) => {
-          setAIAnalysis(data);
-        });
-      }
+      return;
     }
-  }, [isConnected]);
+
+    // Fetch wallet balances
+    getWalletBalances("0x38", address).then((result) => {
+      setWalletBalances(result);
+    });
+
+    // Fetch top market gainers and losers
+    getTopMovers(10).then((data) => {
+      setWidgetData(data);
+    });
+
+    // Fetch user wallet transaction history
+    getWalletHistory("0x38", address, 10).then((data) => {
+      setTransactionHistory(data);
+    });
+  }, [isConnected, address]);
+
+  useEffect(() => {
+    console.log("first: --------------------------");
+    if (walletBalances.data.length > 0 && isConnected && address) {
+      getAIAnalysis(walletBalances.data, address).then((data) => {
+        setAIAnalysis(data);
+      });
+    }
+  }, [walletBalances.data, isConnected, address]);
 
   if (!isConnected) return null;
 
