@@ -107,7 +107,7 @@ const TransactionHistory: React.FC<Props> = ({ transactions }) => {
           {transactions.map((transaction) => (
             <div
               key={transaction.hash}
-              className="flex items-center justify-between p-4 rounded-lg duration-300 hover:shadow-glow hover:border-primary/30 transition-all bg-card/50 backdrop-blur-glass border-primary/10 hover:bg-card/70"
+              className="flex flex-col md:flex-row items-center justify-between p-4 rounded-lg duration-300 hover:shadow-glow hover:border-primary/30 transition-all bg-card/50 backdrop-blur-glass border-primary/10 hover:bg-card/70"
             >
               <div className="flex items-center space-x-4">
                 <div className="flex items-center justify-center w-10 h-10 rounded-full bg-primary/10">

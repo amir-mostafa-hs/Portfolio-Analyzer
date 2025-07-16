@@ -137,10 +137,10 @@ const Dashboard = () => {
         {AIAnalysis && <PortfolioAnalysis analysisData={AIAnalysis} />}
 
         {/* Main Content Grid */}
-        <div className="grid lg:grid-cols-4 gap-6">
+        <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
           {/* Assets Section */}
-          <div className="lg:col-span-2">
-            <Card className="bg-card/50 backdrop-blur-glass border-primary/10">
+          <div className="grid-cols-1 lg:col-span-2">
+            <Card className="bg-card/50 backdrop-blur-glass border-primary/10 ">
               <CardHeader>
                 <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
                   <CardTitle className="text-lg font-semibold flex items-center">
@@ -178,7 +178,7 @@ const Dashboard = () => {
           </div>
 
           {/* Sidebar */}
-          <div className="lg:col-span-2 space-y-6">
+          <div className="grid-cols-1 lg:col-span-2 space-y-6">
             <TransactionHistory transactions={transactionHistory} />
 
             {/* Quick Actions */}
