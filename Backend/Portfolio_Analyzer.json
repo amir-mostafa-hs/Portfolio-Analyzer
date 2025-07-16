@@ -70,13 +70,11 @@
     {
       "parameters": {
         "url": "https://cryptopanic.com/api/v1/posts/",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpQueryAuth",
         "sendQuery": true,
         "queryParameters": {
           "parameters": [
-            {
-              "name": "auth_token",
-              "value": "e399188d29173dd40930fda52122242362a133a4"
-            },
             {
               "name": "currencies",
               "value": "={{ $json.symbols }}"
@@ -96,7 +94,13 @@
         -120
       ],
       "id": "d5431b79-79bd-412c-9273-71e2fab50b26",
-      "name": "CryptoPanic API"
+      "name": "CryptoPanic API",
+      "credentials": {
+        "httpQueryAuth": {
+          "id": "s8dEvrf9I0SgR7Jq",
+          "name": "Query Auth account"
+        }
+      }
     },
     {
       "parameters": {
@@ -307,7 +311,7 @@
   "settings": {
     "executionOrder": "v1"
   },
-  "versionId": "a1a124d2-372a-4744-aaf1-9fddc0b23773",
+  "versionId": "22ab2d29-98d0-4bce-9a2f-a1e213787a95",
   "meta": {
     "templateCredsSetupCompleted": true,
     "instanceId": "51886c499bf29b69b2fceb67e23eb0d0659f2402f3721a7bfc07290c48c920bd"
