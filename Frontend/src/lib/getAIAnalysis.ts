@@ -1,9 +1,8 @@
 const cache = new Map<string, { data: unknown; expiresAt: number }>();
 
-const getAIAnalysis = async (data: unknown) => {
-  const cacheKey = JSON.stringify(data);
+const getAIAnalysis = async (data: unknown, userAddress: string) => {
   const now = Date.now();
-  const cached = cache.get(cacheKey);
+  const cached = cache.get(userAddress);
 
   // Check cache expiration (10 minutes)
   if (cached && cached.expiresAt > now) {
@@ -26,7 +25,7 @@ const getAIAnalysis = async (data: unknown) => {
     const result = await response.json();
 
     // Cache result with expiration
-    cache.set(cacheKey, {
+    cache.set(userAddress, {
       data: result,
       expiresAt: now + 10 * 60 * 1000, // 10 minutes
     });

@@ -63,7 +63,7 @@ const Dashboard = () => {
       });
       // get AI analysis
       if (walletBalances.data.length > 0) {
-        getAIAnalysis(walletBalances.data).then((data) => {
+        getAIAnalysis(walletBalances.data, address).then((data) => {
           setAIAnalysis(data);
         });
       }
