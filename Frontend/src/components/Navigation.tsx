@@ -4,12 +4,12 @@ import { Button } from "@/components/ui/button";
 import {
   Wallet,
   BarChart3,
-  Settings,
+  // Settings,
   Menu,
   X,
-  TrendingUp,
-  Coins,
-  Network,
+  // TrendingUp,
+  // Coins,
+  // Network,
   Shield,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -41,7 +41,7 @@ const Navigation = () => {
   const navigation = [
     { name: "Home", href: "/", icon: BarChart3 },
     { name: "Portfolio", href: "/portfolio", icon: Wallet },
-    { name: "Settings", href: "/settings", icon: Settings },
+    // { name: "Settings", href: "/settings", icon: Settings },
   ];
 
   const isActive = (path: string) => location.pathname === path;
