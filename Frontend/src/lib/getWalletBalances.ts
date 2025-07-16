@@ -1,9 +1,12 @@
 const walletBalancesCache = new Map<
   string,
-  { data: unknown; expiresAt: number }
+  { data: { data: unknown[]; unsafeData: unknown[] }; expiresAt: number }
 >();
 
-const getWalletBalances = async (chain: string, address: string) => {
+const getWalletBalances = async (
+  chain: string,
+  address: string
+): Promise<{ data: unknown[]; unsafeData: unknown[] }> => {
   const key = `${chain}:${address}`;
   const now = Date.now();
 

@@ -12,6 +12,7 @@ const getAIAnalysis = async (data: unknown) => {
 
   try {
     const parsedBody = JSON.stringify(data);
+    console.log(parsedBody);
     const response = await fetch(import.meta.env.VITE_N8N_API, {
       method: "POST",
       body: parsedBody,

@@ -62,9 +62,11 @@ const Dashboard = () => {
         setTransactionHistory(data);
       });
       // get AI analysis
-      getAIAnalysis(walletBalances.data).then((data) => {
-        setAIAnalysis(data);
-      });
+      if (walletBalances.data.length > 0) {
+        getAIAnalysis(walletBalances.data).then((data) => {
+          setAIAnalysis(data);
+        });
+      }
     }
   }, [isConnected]);
 
