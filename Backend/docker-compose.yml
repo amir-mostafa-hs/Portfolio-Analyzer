@@ -42,8 +42,8 @@ volumes:
   n8n_data:
     external: true
   # If we have already created the ollama volume, set external: true
-  postgres_data:
-    external: false
+  # postgres_data:
+  #   external: false
 
 networks:
   n8n-network:
